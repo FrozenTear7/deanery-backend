@@ -1,41 +1,47 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+const express = require('express')
+const bodyParser = require('body-parser')
+const mongoose = require('mongoose')
+const cors = require('cors')
+const app = express()
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+const User = require('./schemas/user')
+const userController = require('./controllers/userController')
 
-var app = express();
+// create application/json parser
+const jsonParser = bodyParser.json()
 
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
+// create application/x-www-form-urlencoded parser
+const urlencodedParser = bodyParser.urlencoded({extended: false})
 
-app.use(logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(cors())
+app.use(jsonParser)
+app.use(urlencodedParser)
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
+const options = {
+  user: 'admin',
+  pass: 'admin123',
+}
 
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  next(createError(404));
-});
+mongoose.connect('mongodb://@ds125241.mlab.com:25241/deanery-example', options)
 
-// error handler
-app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+let db = mongoose.connection
+db.on('error', console.error.bind(console, 'connection error:'))
+db.once('open', function () {
+  console.log('Connection open')
+})
 
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
-});
+let router = express.Router()
 
-module.exports = app;
+router.route('/users')
+  .post(userController.postUser())
+  .get(userController.getUsers())
+
+router.route('/users/:id')
+  .get(userController.getUser())
+  .put(userController.editUser())
+  .delete(userController.deleteUser())
+
+
+app.listen(3001, () => {
+  console.log('Listening on port 3001')
+})
