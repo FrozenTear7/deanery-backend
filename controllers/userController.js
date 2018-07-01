@@ -1,6 +1,7 @@
-const User = require('/schemas/user')
+const User = require('../schemas/user')
 
 exports.postUser = (req, res) => {
+  console.log(req.body)
   const newUser = new User(req.body)
   newUser.save((err) => {
     if (err)

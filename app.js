@@ -4,7 +4,6 @@ const mongoose = require('mongoose')
 const cors = require('cors')
 const app = express()
 
-const User = require('./schemas/user')
 const userController = require('./controllers/userController')
 
 // create application/json parser
@@ -33,14 +32,15 @@ db.once('open', function () {
 let router = express.Router()
 
 router.route('/users')
-  .post(userController.postUser())
-  .get(userController.getUsers())
+  .post(userController.postUser)
+  .get(userController.getUsers)
 
 router.route('/users/:id')
-  .get(userController.getUser())
-  .put(userController.editUser())
-  .delete(userController.deleteUser())
+  .get(userController.getUser)
+  .put(userController.editUser)
+  .delete(userController.deleteUser)
 
+app.use(router)
 
 app.listen(3001, () => {
   console.log('Listening on port 3001')
