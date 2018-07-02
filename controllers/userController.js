@@ -1,7 +1,6 @@
 const User = require('../schemas/user')
 
 exports.postUser = (req, res) => {
-  console.log(req.body)
   const newUser = new User(req.body)
   newUser.save((err) => {
     if (err)
@@ -30,7 +29,13 @@ exports.getUser = (req, res) => {
 }
 
 exports.editUser = (req, res) => {
-  User.findByIdAndUpdate(req.params.id, {name: req.body.name, date: req.body.date}, (err, user) => {
+  User.findByIdAndUpdate(req.params.id, {
+    name: req.body.name,
+    surname: req.body.surname,
+    index: req.body.index,
+    isStudent: req.body.isStudent,
+    password: req.body.password
+  }, (err, user) => {
     if (err)
       res.status(500).send(err)
     else

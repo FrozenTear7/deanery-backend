@@ -5,6 +5,7 @@ const cors = require('cors')
 const app = express()
 
 const userController = require('./controllers/userController')
+const signinController = require('./controllers/signinController')
 
 // create application/json parser
 const jsonParser = bodyParser.json()
@@ -39,6 +40,9 @@ router.route('/users/:id')
   .get(userController.getUser)
   .put(userController.editUser)
   .delete(userController.deleteUser)
+
+router.route('/signin')
+  .post(signinController.postSignin)
 
 app.use(router)
 
