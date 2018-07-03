@@ -5,6 +5,7 @@ const cors = require('cors')
 const app = express()
 
 const userController = require('./controllers/userController')
+const subjectController = require('./controllers/subjectController')
 const signinController = require('./controllers/signinController')
 
 // create application/json parser
@@ -40,6 +41,15 @@ router.route('/users/:id')
   .get(userController.getUser)
   .put(userController.editUser)
   .delete(userController.deleteUser)
+
+router.route('/subjects')
+  .post(subjectController.postSubject)
+  .get(subjectController.getSubjects)
+
+router.route('/subjects/:id')
+  .get(subjectController.getSubject)
+  .put(subjectController.editSubject)
+  .delete(subjectController.deleteSubject)
 
 router.route('/signin')
   .post(signinController.postSignin)

@@ -6,7 +6,7 @@ exports.postUser = (req, res) => {
     if (err)
       res.status(500).send(err)
     else
-      res.send(newUser)
+      res.send({message: 'User created successfully'})
   })
 }
 
@@ -33,13 +33,14 @@ exports.editUser = (req, res) => {
     name: req.body.name,
     surname: req.body.surname,
     index: req.body.index,
-    isStudent: req.body.isStudent,
-    password: req.body.password
+    password: req.body.password,
+    email: req.body.email,
+    isStudent: req.body.isStudent
   }, (err, user) => {
     if (err)
       res.status(500).send(err)
     else
-      res.send(user)
+      res.send({message: 'User updated successfully'})
   })
 }
 
@@ -48,6 +49,6 @@ exports.deleteUser = (req, res) => {
     if (err)
       res.status(500).send(err)
     else
-      res.send('User removed from the database')
+      res.send({message: 'User removed from the database'})
   })
 }
