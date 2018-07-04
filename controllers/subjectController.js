@@ -33,9 +33,10 @@ exports.getSubject = (req, res) => {
 exports.editSubject = (req, res) => {
   let teachersList = []
 
-  req.body.teachers.forEach(teacherId => {
-    teachersList = [...teachersList, teacherId]
-  })
+  if (req.body.teachers)
+    req.body.teachers.forEach(teacherId => {
+      teachersList = [...teachersList, teacherId]
+    })
 
   Subject.findByIdAndUpdate(req.params.id, {
     name: req.body.name,
