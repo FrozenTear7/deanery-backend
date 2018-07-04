@@ -11,12 +11,14 @@ exports.postGrade = (req, res) => {
 }
 
 exports.getGrades = (req, res) => {
-  Grade.find({}, (err, grades) => {
-    if (err)
-      res.status(500).send(err)
-    else
-      res.send(grades)
-  })
+  Grade.find({})
+    .populate('subject')
+    .exec((err, grades) => {
+      if (err)
+        res.status(500).send(err)
+      else
+        res.send(grades)
+    })
 }
 
 exports.getGrade = (req, res) => {
@@ -31,6 +33,7 @@ exports.getGrade = (req, res) => {
 exports.editGrade = (req, res) => {
   Grade.findByIdAndUpdate(req.params.id, {
     value: req.body.value,
+    subject: req.body.subject
   }, (err, grade) => {
     if (err)
       res.status(500).send(err)

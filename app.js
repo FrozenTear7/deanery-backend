@@ -6,6 +6,7 @@ const app = express()
 
 const userController = require('./controllers/userController')
 const subjectController = require('./controllers/subjectController')
+const gradeController = require('./controllers/gradeController')
 const signinController = require('./controllers/signinController')
 
 // create application/json parser
@@ -50,6 +51,15 @@ router.route('/subjects/:id')
   .get(subjectController.getSubject)
   .put(subjectController.editSubject)
   .delete(subjectController.deleteSubject)
+
+router.route('/grades')
+  .post(gradeController.postGrade)
+  .get(gradeController.getGrades)
+
+router.route('/grades/:id')
+  .get(gradeController.getGrade)
+  .put(gradeController.editGrade)
+  .delete(gradeController.deleteGrade)
 
 router.route('/signin')
   .post(signinController.postSignin)

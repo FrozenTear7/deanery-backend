@@ -1,5 +1,4 @@
 const Subject = require('../schemas/subject')
-const User = require('../schemas/user')
 
 exports.postSubject = (req, res) => {
   const newSubject = new Subject(req.body)
