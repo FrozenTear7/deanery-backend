@@ -12,12 +12,14 @@ exports.postSubject = (req, res) => {
 }
 
 exports.getSubjects = (req, res) => {
-  Subject.find({}, (err, subjects) => {
-    if (err)
-      res.status(500).send(err)
-    else
-      res.send(subjects)
-  })
+  Subject.find({})
+    .populate('teachers')
+    .exec((err, subjects) => {
+      if (err)
+        res.status(500).send(err)
+      else
+        res.send(subjects)
+    })
 }
 
 exports.getSubject = (req, res) => {
@@ -32,17 +34,9 @@ exports.getSubject = (req, res) => {
 exports.editSubject = (req, res) => {
   let teachersList = []
 
-  // for(let i = 0; i < req.body.teachers.length; i++) {
-  //   teachers = [...teachers, User.find({_id: req.body.teachers[i]})]
-  // }
-
-
-
   req.body.teachers.forEach(teacherId => {
     teachersList = [...teachersList, teacherId]
   })
-
-  console.log(teachersList)
 
   Subject.findByIdAndUpdate(req.params.id, {
     name: req.body.name,

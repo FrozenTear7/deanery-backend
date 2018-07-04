@@ -11,7 +11,10 @@ exports.postUser = (req, res) => {
 }
 
 exports.getUsers = (req, res) => {
-  User.find({}, (err, users) => {
+  User.find({})
+    .populate('subjects')
+    .populate('grades')
+    .exec((err, users) => {
     if (err)
       res.status(500).send(err)
     else
@@ -29,13 +32,20 @@ exports.getUser = (req, res) => {
 }
 
 exports.editUser = (req, res) => {
+  let subjectList = []
+
+  req.body.subjects.forEach(subjectId => {
+    subjectList = [...subjectList, subjectId]
+  })
+
   User.findByIdAndUpdate(req.params.id, {
     name: req.body.name,
     surname: req.body.surname,
     index: req.body.index,
     password: req.body.password,
     email: req.body.email,
-    isStudent: req.body.isStudent
+    isStudent: req.body.isStudent,
+    $push: {subjects: subjectList}
   }, (err, user) => {
     if (err)
       res.status(500).send(err)
