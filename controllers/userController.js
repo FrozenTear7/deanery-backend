@@ -23,12 +23,15 @@ exports.getUsers = (req, res) => {
 }
 
 exports.getUser = (req, res) => {
-  User.findById(req.params.id, (err, user) => {
-    if (err)
-      res.status(500).send(err)
-    else
-      res.send(user)
-  })
+  User.findById(req.params.id)
+    .populate('subjects')
+    .populate({path: 'grades', populate: {path: 'subject', model: 'Subject'}})
+    .exec((err, user) => {
+      if (err)
+        res.status(500).send(err)
+      else
+        res.send(user)
+    })
 }
 
 exports.editUser = (req, res) => {
