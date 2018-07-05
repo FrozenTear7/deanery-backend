@@ -1,40 +1,40 @@
-const User = require('../schemas/user')
+const Student = require('../schemas/student')
 
-exports.postUser = (req, res) => {
-  const newUser = new User(req.body)
-  newUser.save((err) => {
+exports.postStudent = (req, res) => {
+  const newStudent = new Student(req.body)
+  newStudent.save((err) => {
     if (err)
       res.status(500).send(err)
     else
-      res.send({message: 'User created successfully'})
+      res.send({message: 'Student created successfully'})
   })
 }
 
-exports.getUsers = (req, res) => {
-  User.find({})
+exports.getStudents = (req, res) => {
+  Student.find({})
     .populate('subjects')
     .populate('grades')
-    .exec((err, users) => {
+    .exec((err, students) => {
       if (err)
         res.status(500).send(err)
       else
-        res.send(users)
+        res.send(students)
     })
 }
 
-exports.getUser = (req, res) => {
-  User.findById(req.params.id)
-    .populate('subjects')
+exports.getStudent = (req, res) => {
+  Student.findById(req.params.id)
+    .populate({path: 'subjects', populate: {path: 'teacher', model: 'Teacher'}})
     .populate({path: 'grades', populate: {path: 'subject', model: 'Subject'}})
-    .exec((err, user) => {
+    .exec((err, student) => {
       if (err)
         res.status(500).send(err)
       else
-        res.send(user)
+        res.send(student)
     })
 }
 
-exports.editUser = (req, res) => {
+exports.editStudent = (req, res) => {
   let subjectList = []
   let gradeList = []
 
@@ -48,27 +48,26 @@ exports.editUser = (req, res) => {
       gradeList = [...gradeList, gradeId]
     })
 
-  User.findByIdAndUpdate(req.params.id, {
+  Student.findByIdAndUpdate(req.params.id, {
     name: req.body.name,
     surname: req.body.surname,
     index: req.body.index,
     password: req.body.password,
     email: req.body.email,
-    isStudent: req.body.isStudent,
     $push: {subjects: subjectList, grades: gradeList},
-  }, (err, user) => {
+  }, (err, student) => {
     if (err)
       res.status(500).send(err)
     else
-      res.send({message: 'User updated successfully'})
+      res.send({message: 'Student updated successfully'})
   })
 }
 
-exports.deleteUser = (req, res) => {
-  User.findByIdAndRemove(req.params.id, (err) => {
+exports.deleteStudent = (req, res) => {
+  Student.findByIdAndRemove(req.params.id, (err) => {
     if (err)
       res.status(500).send(err)
     else
-      res.send({message: 'User removed from the database'})
+      res.send({message: 'Student removed from the database'})
   })
 }

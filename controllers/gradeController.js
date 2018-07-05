@@ -1,4 +1,5 @@
 const Grade = require('../schemas/grade')
+const Student = require('../schemas/student')
 
 exports.postGrade = (req, res) => {
   const newGrade = new Grade(req.body)
@@ -6,7 +7,14 @@ exports.postGrade = (req, res) => {
     if (err)
       res.status(500).send(err)
     else
-      res.send(newGrade)
+      Student.findByIdAndUpdate(req.body.student, {
+        $push: {grades: newGrade._id},
+      }, (err, student) => {
+        if (err)
+          res.status(500).send(err)
+        else
+          res.send({message: 'Grade added successfully'})
+      })
   })
 }
 
@@ -49,6 +57,13 @@ exports.deleteGrade = (req, res) => {
     if (err)
       res.status(500).send(err)
     else
-      res.send('Grade removed from the database')
+      Student.findByIdAndUpdate(req.body.student, {
+        $pull: {grades: req.params.id},
+      }, (err, student) => {
+        if (err)
+          res.status(500).send(err)
+        else
+          res.send({message: 'Grade removed from the database'})
+      })
   })
 }

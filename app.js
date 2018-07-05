@@ -4,7 +4,8 @@ const mongoose = require('mongoose')
 const cors = require('cors')
 const app = express()
 
-const userController = require('./controllers/userController')
+const studentController = require('./controllers/studentController')
+const teacherController = require('./controllers/teacherController')
 const subjectController = require('./controllers/subjectController')
 const gradeController = require('./controllers/gradeController')
 const signinController = require('./controllers/signinController')
@@ -34,14 +35,23 @@ db.once('open', function () {
 
 let router = express.Router()
 
-router.route('/users')
-  .post(userController.postUser)
-  .get(userController.getUsers)
+router.route('/students')
+  .post(studentController.postStudent)
+  .get(studentController.getStudents)
 
-router.route('/users/:id')
-  .get(userController.getUser)
-  .put(userController.editUser)
-  .delete(userController.deleteUser)
+router.route('/students/:id')
+  .get(studentController.getStudent)
+  .put(studentController.editStudent)
+  .delete(studentController.deleteStudent)
+
+router.route('/teachers')
+  .post(teacherController.postTeacher)
+  .get(teacherController.getTeachers)
+
+router.route('/teachers/:id')
+  .get(teacherController.getTeacher)
+  .put(teacherController.editTeacher)
+  .delete(teacherController.deleteTeacher)
 
 router.route('/subjects')
   .post(subjectController.postSubject)
@@ -61,8 +71,11 @@ router.route('/grades/:id')
   .put(gradeController.editGrade)
   .delete(gradeController.deleteGrade)
 
-router.route('/signin')
-  .post(signinController.postSignin)
+router.route('/signin/student')
+  .post(signinController.postSigninStudent)
+
+router.route('/signin/teacher')
+  .post(signinController.postSigninTeacher)
 
 app.use(router)
 
