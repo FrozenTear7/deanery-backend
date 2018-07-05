@@ -36,46 +36,46 @@ db.once('open', function () {
 let router = express.Router()
 
 router.route('/students')
-  .post(studentController.postStudent)
-  .get(studentController.getStudents)
+  .post(signinController.isAuthenticated, studentController.postStudent)
+  .get(signinController.isAuthenticated, studentController.getStudents)
 
 router.route('/students/:id')
-  .get(studentController.getStudent)
-  .put(studentController.editStudent)
-  .delete(studentController.deleteStudent)
+  .get(signinController.isAuthenticated, studentController.getStudent)
+  .put(signinController.isAuthenticated, studentController.editStudent)
+  .delete(signinController.isAuthenticated, studentController.deleteStudent)
 
 router.route('/teachers')
-  .post(teacherController.postTeacher)
-  .get(teacherController.getTeachers)
+  .post(signinController.isAuthenticated, teacherController.postTeacher)
+  .get(signinController.isAuthenticated, teacherController.getTeachers)
 
 router.route('/teachers/:id')
-  .get(teacherController.getTeacher)
-  .put(teacherController.editTeacher)
-  .delete(teacherController.deleteTeacher)
+  .get(signinController.isAuthenticated, teacherController.getTeacher)
+  .put(signinController.isAuthenticated, teacherController.editTeacher)
+  .delete(signinController.isAuthenticated, teacherController.deleteTeacher)
 
 router.route('/subjects')
-  .post(subjectController.postSubject)
-  .get(subjectController.getSubjects)
+  .post(signinController.isAuthenticated, subjectController.postSubject)
+  .get(signinController.isAuthenticated, subjectController.getSubjects)
 
 router.route('/subjects/:id')
-  .get(subjectController.getSubject)
-  .put(subjectController.editSubject)
-  .delete(subjectController.deleteSubject)
+  .get(signinController.isAuthenticated, subjectController.getSubject)
+  .put(signinController.isAuthenticated, subjectController.editSubject)
+  .delete(signinController.isAuthenticated, subjectController.deleteSubject)
 
 router.route('/grades')
-  .post(gradeController.postGrade)
-  .get(gradeController.getGrades)
+  .post(signinController.isAuthenticated, gradeController.postGrade)
+  .get(signinController.isAuthenticated, gradeController.getGrades)
 
 router.route('/grades/:id')
-  .get(gradeController.getGrade)
-  .put(gradeController.editGrade)
-  .delete(gradeController.deleteGrade)
+  .get(signinController.isAuthenticated, gradeController.getGrade)
+  .put(signinController.isAuthenticated, gradeController.editGrade)
+  .delete(signinController.isAuthenticated, gradeController.deleteGrade)
 
 router.route('/signin/student')
-  .post(signinController.postSigninStudent)
+  .post(signinController.signinStudent)
 
 router.route('/signin/teacher')
-  .post(signinController.postSigninTeacher)
+  .post(signinController.signinTeacher)
 
 app.use(router)
 
