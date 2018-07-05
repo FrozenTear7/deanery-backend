@@ -9,7 +9,7 @@ exports.postGrade = (req, res) => {
     else
       Student.findByIdAndUpdate(req.body.student, {
         $push: {grades: newGrade._id},
-      }, (err, student) => {
+      }, (err) => {
         if (err)
           res.status(500).send(err)
         else

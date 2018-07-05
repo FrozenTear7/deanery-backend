@@ -1,4 +1,6 @@
 const Subject = require('../schemas/subject')
+const Teacher = require('../schemas/teacher')
+const Student = require('../schemas/student')
 
 exports.postSubject = (req, res) => {
   const newSubject = new Subject(req.body)
@@ -13,6 +15,7 @@ exports.postSubject = (req, res) => {
 exports.getSubjects = (req, res) => {
   Subject.find({})
     .populate('teachers')
+    .populate('students')
     .exec((err, subjects) => {
       if (err)
         res.status(500).send(err)
@@ -31,21 +34,48 @@ exports.getSubject = (req, res) => {
 }
 
 exports.editSubject = (req, res) => {
-  let teachersList = []
+  let teacherList = []
+  let studentList = []
 
   if (req.body.teachers)
     req.body.teachers.forEach(teacherId => {
-      teachersList = [...teachersList, teacherId]
+      teacherList = [...teacherList, teacherId]
+    })
+
+  if (req.body.students)
+    req.body.students.forEach(studentId => {
+      studentList = [...studentList, studentId]
     })
 
   Subject.findByIdAndUpdate(req.params.id, {
     name: req.body.name,
-    $push: {teachers: teachersList}
+    $push: {teachers: teacherList, students: studentList},
   }, (err, subject) => {
     if (err)
       res.status(500).send(err)
-    else
-      res.send({message: 'Subject updated successfully'})
+    else {
+      if (req.body.teachers)
+        req.body.teachers.forEach(teacherId => {
+          Teacher.findByIdAndUpdate(teacherId, {
+            $push: {subjects: subject._id},
+          }, (err) => {
+            if (err)
+              res.status(500).send(err)
+          })
+        })
+
+      if (req.body.students)
+        req.body.students.forEach(studentId => {
+          Student.findByIdAndUpdate(studentId, {
+            $push: {subjects: subject._id},
+          }, (err) => {
+            if (err)
+              res.status(500).send(err)
+          })
+        })
+    }
+
+    res.send({message: 'Subject updated successfully'})
   })
 }
 

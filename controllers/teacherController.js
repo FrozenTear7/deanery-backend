@@ -23,7 +23,7 @@ exports.getTeachers = (req, res) => {
 
 exports.getTeacher = (req, res) => {
   Teacher.findById(req.params.id)
-    .populate('subjects')
+    .populate({path: 'subjects', populate: {path: 'students', model: 'Student', select: 'grades'}})
     .exec((err, teacher) => {
       if (err)
         res.status(500).send(err)
