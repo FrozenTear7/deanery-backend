@@ -25,7 +25,17 @@ exports.getTeacher = (req, res) => {
   Teacher.findById(req.params.id)
     .populate({
       path: 'subjects',
-      populate: {path: 'students', model: 'Student', select: 'grades', populate: {path: 'grades', model: 'Grade'}}
+      select: 'name students',
+      populate: {
+        path: 'students',
+        model: 'Student',
+        select: 'name surname index grades',
+        populate: {
+          path: 'grades',
+          model: 'Grade',
+          select: 'value note subject'
+        },
+      },
     })
     .exec((err, teacher) => {
       if (err)
@@ -49,8 +59,9 @@ exports.editTeacher = (req, res) => {
     password: req.body.password,
     email: req.body.email,
     index: req.body.index,
+    avatar: req.body.avatar,
     $push: {subjects: subjectList},
-  }, (err, teacher) => {
+  }, (err) => {
     if (err)
       res.status(500).send(err)
     else

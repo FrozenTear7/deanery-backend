@@ -8,6 +8,7 @@ const teacherSchema = mongoose.Schema({
   index: {type: String, required: true, unique: true},
   password: {type: String, required: true},
   email: {type: String, required: true, unique: true},
+  avatar: String,
   subjects: [{type: mongoose.Schema.Types.ObjectId, ref: 'Subject'}]
 })
 

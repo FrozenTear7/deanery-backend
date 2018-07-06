@@ -2,6 +2,7 @@ const Grade = require('../schemas/grade')
 const Student = require('../schemas/student')
 
 exports.postGrade = (req, res) => {
+  console.log(req.body)
   const newGrade = new Grade(req.body)
   newGrade.save((err) => {
     if (err)
@@ -42,7 +43,7 @@ exports.getGrade = (req, res) => {
 exports.editGrade = (req, res) => {
   Grade.findByIdAndUpdate(req.params.id, {
     value: req.body.value,
-    note: req.body.note
+    note: req.body.note,
   }, (err, grade) => {
     if (err)
       res.status(500).send(err)

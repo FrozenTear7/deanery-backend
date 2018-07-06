@@ -54,8 +54,9 @@ exports.editStudent = (req, res) => {
     index: req.body.index,
     password: req.body.password,
     email: req.body.email,
+    avatar: req.body.avatar,
     $push: {subjects: subjectList, grades: gradeList},
-  }, (err, student) => {
+  }, (err) => {
     if (err)
       res.status(500).send(err)
     else
