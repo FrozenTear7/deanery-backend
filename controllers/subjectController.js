@@ -55,8 +55,7 @@ exports.editSubject = (req, res) => {
 
   Subject.findByIdAndUpdate(req.params.id, {
     name: req.body.name,
-    $push: {teachers: teacherListAdd, students: studentListAdd},
-    $pull: {teachers: teacherListDelete, students: studentListDelete},
+    $push: {teachers: teacherListAdd, students: studentListAdd}
   }, (err, subject) => {
     if (err)
       res.status(500).send(err)
@@ -79,22 +78,33 @@ exports.editSubject = (req, res) => {
         })
       })
 
-      teacherListDelete.forEach(teacher => {
-        Teacher.findByIdAndUpdate(teacher, {
-          $pull: {subjects: subject._id},
-        }, (err) => {
-          if (err)
-            res.status(500).send(err)
-        })
-      })
+      Subject.findByIdAndUpdate(req.params.id, {
+        name: req.body.name,
+        $pull: {teachers: {$in: teacherListDelete}, students: {$in: studentListDelete}},
+      }, (err, subject) => {
+        if (err)
+          res.status(500).send(err)
+        else {
+          teacherListDelete.forEach(teacher => {
+            Teacher.findByIdAndUpdate(teacher, {
+              $pull: {subjects: subject._id},
+            }, (err) => {
+              if (err)
+                res.status(500).send(err)
+            })
+          })
 
-      studentListDelete.forEach(student => {
-        Student.findByIdAndUpdate(student, {
-          $pull: {subjects: subject._id},
-        }, (err) => {
-          if (err)
-            res.status(500).send(err)
-        })
+          studentListDelete.forEach(student => {
+            Student.findByIdAndUpdate(student, {
+              $pull: {subjects: subject._id},
+            }, (err) => {
+              if (err)
+                res.status(500).send(err)
+            })
+          })
+
+          res.send({message: 'Subject successfully edited'})
+        }
       })
     }
   })
@@ -121,6 +131,5 @@ exports.deleteSubject = (req, res) => {
 
       res.send({message: 'Subject removed from the database'})
     }
-
   })
 }
