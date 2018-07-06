@@ -42,8 +42,7 @@ exports.getGrade = (req, res) => {
 exports.editGrade = (req, res) => {
   Grade.findByIdAndUpdate(req.params.id, {
     value: req.body.value,
-    subject: req.body.subject,
-    student: req.body.student
+    note: req.body.note
   }, (err, grade) => {
     if (err)
       res.status(500).send(err)
@@ -59,7 +58,7 @@ exports.deleteGrade = (req, res) => {
     else
       Student.findByIdAndUpdate(req.body.student, {
         $pull: {grades: req.params.id},
-      }, (err, student) => {
+      }, (err) => {
         if (err)
           res.status(500).send(err)
         else

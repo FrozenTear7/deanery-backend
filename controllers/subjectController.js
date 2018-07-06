@@ -14,8 +14,8 @@ exports.postSubject = (req, res) => {
 
 exports.getSubjects = (req, res) => {
   Subject.find({})
-    .populate('teachers')
-    .populate('students')
+    .populate({path: 'teachers', select: 'name surname index'})
+    .populate({path: 'students', select: 'name surname index'})
     .exec((err, subjects) => {
       if (err)
         res.status(500).send(err)
@@ -25,57 +25,78 @@ exports.getSubjects = (req, res) => {
 }
 
 exports.getSubject = (req, res) => {
-  Subject.findById(req.params.id, (err, subject) => {
-    if (err)
-      res.status(500).send(err)
-    else
-      res.send(subject)
-  })
+  Subject.findById(req.params.id)
+    .populate({path: 'teachers', select: 'name surname index'})
+    .populate({path: 'students', select: 'name surname index'})
+    .exec((err, subject) => {
+      if (err)
+        res.status(500).send(err)
+      else
+        res.send(subject)
+    })
 }
 
 exports.editSubject = (req, res) => {
-  let teacherList = []
-  let studentList = []
+  let teacherListAdd = []
+  let studentListAdd = []
+  let teacherListDelete = []
+  let studentListDelete = []
 
-  if (req.body.teachers)
-    req.body.teachers.forEach(teacherId => {
-      teacherList = [...teacherList, teacherId]
-    })
+  if (req.body.teacherListAdd)
+    teacherListAdd = req.body.teacherListAdd.map(user => user._id)
+  if (req.body.studentListAdd)
+    studentListAdd = req.body.studentListAdd.map(user => user._id)
+  if (req.body.teacherListDelete)
+    teacherListDelete = req.body.teacherListDelete.map(user => user._id)
+  if (req.body.studentListDelete)
+    studentListDelete = req.body.studentListDelete.map(user => user._id)
 
-  if (req.body.students)
-    req.body.students.forEach(studentId => {
-      studentList = [...studentList, studentId]
-    })
+  console.log(req.body)
 
   Subject.findByIdAndUpdate(req.params.id, {
     name: req.body.name,
-    $push: {teachers: teacherList, students: studentList},
+    $push: {teachers: teacherListAdd, students: studentListAdd},
+    $pull: {teachers: teacherListDelete, students: studentListDelete},
   }, (err, subject) => {
     if (err)
       res.status(500).send(err)
     else {
-      if (req.body.teachers)
-        req.body.teachers.forEach(teacherId => {
-          Teacher.findByIdAndUpdate(teacherId, {
-            $push: {subjects: subject._id},
-          }, (err) => {
-            if (err)
-              res.status(500).send(err)
-          })
+      teacherListAdd.forEach(teacher => {
+        Teacher.findByIdAndUpdate(teacher, {
+          $push: {subjects: subject._id},
+        }, (err) => {
+          if (err)
+            res.status(500).send(err)
         })
+      })
 
-      if (req.body.students)
-        req.body.students.forEach(studentId => {
-          Student.findByIdAndUpdate(studentId, {
-            $push: {subjects: subject._id},
-          }, (err) => {
-            if (err)
-              res.status(500).send(err)
-          })
+      studentListAdd.forEach(student => {
+        Student.findByIdAndUpdate(student, {
+          $push: {subjects: subject._id},
+        }, (err) => {
+          if (err)
+            res.status(500).send(err)
         })
+      })
+
+      teacherListDelete.forEach(teacher => {
+        Teacher.findByIdAndUpdate(teacher, {
+          $pull: {subjects: subject._id},
+        }, (err) => {
+          if (err)
+            res.status(500).send(err)
+        })
+      })
+
+      studentListDelete.forEach(student => {
+        Student.findByIdAndUpdate(student, {
+          $pull: {subjects: subject._id},
+        }, (err) => {
+          if (err)
+            res.status(500).send(err)
+        })
+      })
     }
-
-    res.send({message: 'Subject updated successfully'})
   })
 }
 
@@ -83,7 +104,23 @@ exports.deleteSubject = (req, res) => {
   Subject.findByIdAndRemove(req.params.id, (err) => {
     if (err)
       res.status(500).send(err)
-    else
+    else {
+      Student.findByIdAndUpdate(req.body.student, {
+        $pull: {subjects: req.params.id},
+      }, (err) => {
+        if (err)
+          res.status(500).send(err)
+      })
+
+      Teacher.findByIdAndUpdate(req.body.student, {
+        $pull: {subjects: req.params.id},
+      }, (err) => {
+        if (err)
+          res.status(500).send(err)
+      })
+
       res.send({message: 'Subject removed from the database'})
+    }
+
   })
 }
