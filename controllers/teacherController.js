@@ -33,7 +33,7 @@ exports.getTeacher = (req, res) => {
         populate: {
           path: 'grades',
           model: 'Grade',
-          select: 'value note subject'
+          select: 'value note type subject'
         },
       },
     })
