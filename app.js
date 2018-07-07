@@ -4,8 +4,11 @@ const mongoose = require('mongoose')
 const cors = require('cors')
 const app = express()
 
-const User = require('./schemas/user')
-const userController = require('./controllers/userController')
+const studentController = require('./controllers/studentController')
+const teacherController = require('./controllers/teacherController')
+const subjectController = require('./controllers/subjectController')
+const gradeController = require('./controllers/gradeController')
+const signinController = require('./controllers/signinController')
 
 // create application/json parser
 const jsonParser = bodyParser.json()
@@ -32,15 +35,49 @@ db.once('open', function () {
 
 let router = express.Router()
 
-router.route('/users')
-  .post(userController.postUser())
-  .get(userController.getUsers())
+router.route('/students')
+  .post(signinController.isAuthenticated, studentController.postStudent)
+  .get(signinController.isAuthenticated, studentController.getStudents)
 
-router.route('/users/:id')
-  .get(userController.getUser())
-  .put(userController.editUser())
-  .delete(userController.deleteUser())
+router.route('/students/:id')
+  .get(signinController.isAuthenticated, studentController.getStudent)
+  .put(signinController.isAuthenticated, studentController.editStudent)
+  .delete(signinController.isAuthenticated, studentController.deleteStudent)
 
+router.route('/teachers')
+  .post(signinController.isAuthenticated, teacherController.postTeacher)
+  .get(signinController.isAuthenticated, teacherController.getTeachers)
+
+router.route('/teachers/:id')
+  .get(signinController.isAuthenticated, teacherController.getTeacher)
+  .put(signinController.isAuthenticated, teacherController.editTeacher)
+  .delete(signinController.isAuthenticated, teacherController.deleteTeacher)
+
+router.route('/subjects')
+  .post(signinController.isAuthenticated, subjectController.postSubject)
+  .get(signinController.isAuthenticated, subjectController.getSubjects)
+
+router.route('/subjects/:id')
+  .get(signinController.isAuthenticated, subjectController.getSubject)
+  .put(signinController.isAuthenticated, subjectController.editSubject)
+  .delete(signinController.isAuthenticated, subjectController.deleteSubject)
+
+router.route('/grades')
+  .post(signinController.isAuthenticated, gradeController.postGrade)
+  .get(signinController.isAuthenticated, gradeController.getGrades)
+
+router.route('/grades/:id')
+  .get(signinController.isAuthenticated, gradeController.getGrade)
+  .put(signinController.isAuthenticated, gradeController.editGrade)
+  .delete(signinController.isAuthenticated, gradeController.deleteGrade)
+
+router.route('/signin/student')
+  .post(signinController.signinStudent)
+
+router.route('/signin/teacher')
+  .post(signinController.signinTeacher)
+
+app.use(router)
 
 app.listen(3001, () => {
   console.log('Listening on port 3001')
