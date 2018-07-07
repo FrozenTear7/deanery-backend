@@ -56,7 +56,6 @@ exports.editTeacher = (req, res) => {
   Teacher.findByIdAndUpdate(req.params.id, {
     name: req.body.name,
     surname: req.body.surname,
-    password: req.body.password,
     email: req.body.email,
     index: req.body.index,
     avatar: req.body.avatar,

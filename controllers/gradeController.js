@@ -44,7 +44,6 @@ exports.editGrade = (req, res) => {
   Grade.findByIdAndUpdate(req.params.id, {
     value: req.body.value,
     note: req.body.note,
-    type: req.body.name,
   }, (err, grade) => {
     if (err)
       res.status(500).send(err)
