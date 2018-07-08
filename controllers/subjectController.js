@@ -14,8 +14,8 @@ exports.postSubject = (req, res) => {
 
 exports.getSubjects = (req, res) => {
   Subject.find({})
-    .populate({path: 'teachers', select: 'name surname index'})
-    .populate({path: 'students', select: 'name surname index'})
+    .populate({path: 'teachers', select: 'name surname index email avatar'})
+    .populate({path: 'students', select: 'name surname index email avatar'})
     .exec((err, subjects) => {
       if (err)
         res.status(500).send(err)
@@ -26,8 +26,8 @@ exports.getSubjects = (req, res) => {
 
 exports.getSubject = (req, res) => {
   Subject.findById(req.params.id)
-    .populate({path: 'teachers', select: 'name surname index'})
-    .populate({path: 'students', select: 'name surname index'})
+    .populate({path: 'teachers', select: 'name surname index email avatar'})
+    .populate({path: 'students', select: 'name surname index email avatar'})
     .exec((err, subject) => {
       if (err)
         res.status(500).send(err)
