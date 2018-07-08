@@ -33,7 +33,7 @@ exports.signinStudent = (req, res) => {
     }
 
     if (!user) {
-      return res.status(500).send({message: 'No such user exists'})
+      return res.status(500).send({error: 'No such user exists'})
     }
 
     user.verifyPassword(password, (err, isMatch) => {
@@ -42,7 +42,7 @@ exports.signinStudent = (req, res) => {
       }
 
       if (!isMatch) {
-        return res.status(500).send({message: 'Wrong password'})
+        return res.status(500).send({error: 'Wrong password'})
       }
 
       return res.send({
@@ -65,7 +65,7 @@ exports.signinTeacher = (req, res) => {
     }
 
     if (!user) {
-      return res.status(500).send({message: 'No such user exists'})
+      return res.status(500).send({error: 'No such user exists'})
     }
 
     user.verifyPassword(password, (err, isMatch) => {
@@ -74,7 +74,7 @@ exports.signinTeacher = (req, res) => {
       }
 
       if (!isMatch) {
-        return res.status(500).send({message: 'Wrong password'})
+        return res.status(500).send({error: 'Wrong password'})
       }
 
       return res.send({
