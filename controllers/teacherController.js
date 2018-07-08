@@ -29,7 +29,7 @@ exports.getTeacher = (req, res) => {
       populate: {
         path: 'students',
         model: 'Student',
-        select: 'name surname index grades',
+        select: 'name surname index email avatar grades',
         populate: {
           path: 'grades',
           model: 'Grade',
