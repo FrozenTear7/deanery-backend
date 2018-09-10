@@ -79,16 +79,4 @@ router.route('/signin/teacher')
 
 app.use(router)
 
-function stayAlive (counter) {
-  if (counter < 10) {
-    setTimeout(() => {
-      counter++
-      console.log('Still kickin: ' + counter)
-      start(counter)
-    }, 1000)
-  }
-}
-
-app.listen(process.env.PORT || 5000, () => {
-  stayAlive(0)
-})
+app.listen(process.env.PORT || 5000)
