@@ -89,7 +89,7 @@ function stayAlive (counter) {
   }
 }
 
-start(0)
+stayAlive(0)
 
 app.listen(process.env.PORT || 5000, () => {
 
